@@ -51,19 +51,24 @@
   </el-row>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { reactive, ref } from "vue";
+
+import login from "~/api/manager";
+import { ElNotification } from "element-plus";
+import { useRouter } from "vue-router";
 // import { User, Lock } from "@element-plus/icons-vue";
 // do not use same name with ref
 const form = reactive({
   username: "",
   password: "",
 });
+const router = useRouter();
 
 //定义用户名和密码的规则验证
 const rules = {
   username: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
-  password: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
+  password: [{ required: true, message: "密码不能为空", trigger: "blur" }],
 };
 
 const formRef = ref();
@@ -72,7 +77,27 @@ const onSubmit = () => {
     if (!valid) {
       return;
     }
-    console.log(111);
+    login(form.username, form.password)
+      .then((res) => {
+        console.log(res);
+        // 提示成功
+        ElNotification({
+          message: "登录成功",
+          type: "success",
+          duration: 20,
+        });
+        // 存储token和用户信息
+
+        // 跳转到后台首页
+        router.push("/");
+      })
+      .catch((err) => {
+        ElNotification({
+          message: err.response.data || "请求失败",
+          type: "error",
+          duration: 20,
+        });
+      });
   });
 };
 </script>
