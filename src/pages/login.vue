@@ -6,11 +6,7 @@
         <div class="text-gray-200 text-sm">这里是《Vue3 + Vite 小鼠销售》</div>
       </div>
     </el-col>
-    <el-col
-      :lg="8"
-      :md="12"
-      class="bg-light-50 flex items-center justify-center flex-col"
-    >
+    <el-col :lg="8" :md="12" class="bg-light-50 flex items-center justify-center flex-col">
       <h2 class="font-bold text-3xl text-true-gray-800">欢迎回来</h2>
 
       <div class="flex items-center justify-center my-5 text-gray-300">
@@ -22,29 +18,23 @@
         <el-form-item prop="username">
           <el-input v-model="form.username" placeholder="请输入用户名">
             <template #prefix>
-              <el-icon><User /></el-icon>
+              <el-icon>
+                <User />
+              </el-icon>
             </template>
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input
-            v-model="form.password"
-            placeholder="请输入密码"
-            type="password"
-          >
+          <el-input v-model="form.password" placeholder="请输入密码" type="password">
             <template #prefix>
-              <el-icon><Lock /></el-icon>
+              <el-icon>
+                <Lock />
+              </el-icon>
             </template>
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-button
-            color="#626aef"
-            type="primary"
-            @click="onSubmit"
-            class="w-[250px]"
-            >登 录</el-button
-          >
+          <el-button color="#626aef" type="primary" @click="onSubmit" class="w-[250px]">登 录</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -84,7 +74,7 @@ const onSubmit = () => {
         ElNotification({
           message: "登录成功",
           type: "success",
-          duration: 20,
+          duration: 3000,
         });
         // 存储token和用户信息
 
@@ -93,9 +83,9 @@ const onSubmit = () => {
       })
       .catch((err) => {
         ElNotification({
-          message: err.response.data || "请求失败",
+          message: err.response.data.msg || "请求失败",
           type: "error",
-          duration: 20,
+          duration: 3000,
         });
       });
   });
