@@ -9,8 +9,13 @@ const service = axios.create({
 service.interceptors.request.use(
   function (config) {
     // Do something before request is sent
-    const cookie = useCookies();
-    const token = cookie.get("admin-token");
+    // const cookie = useCookies();
+    // const token = cookie.get("admin-token");、
+
+    // 获取token
+    // console.log(localStorage.getItem("admin-token"));
+    const token = localStorage.getItem("admin-token");
+    console.log(token);
     if (token) {
       config.headers["token"] = token;
     }

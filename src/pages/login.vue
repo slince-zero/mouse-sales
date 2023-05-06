@@ -6,7 +6,11 @@
         <div class="text-gray-200 text-sm">这里是《Vue3 + Vite 小鼠销售》</div>
       </div>
     </el-col>
-    <el-col :lg="8" :md="12" class="bg-light-50 flex items-center justify-center flex-col">
+    <el-col
+      :lg="8"
+      :md="12"
+      class="bg-light-50 flex items-center justify-center flex-col"
+    >
       <h2 class="font-bold text-3xl text-true-gray-800">欢迎回来</h2>
 
       <div class="flex items-center justify-center my-5 text-gray-300">
@@ -25,7 +29,11 @@
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-model="form.password" placeholder="请输入密码" type="password">
+          <el-input
+            v-model="form.password"
+            placeholder="请输入密码"
+            type="password"
+          >
             <template #prefix>
               <el-icon>
                 <Lock />
@@ -34,7 +42,14 @@
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-button color="#626aef" type="primary" @click="onSubmit" class="w-[250px]">登 录</el-button>
+          <el-button
+            color="#626aef"
+            type="primary"
+            @click="onSubmit"
+            class="w-[250px]"
+            :loading="loading"
+            >登 录</el-button
+          >
         </el-form-item>
       </el-form>
     </el-col>
@@ -50,7 +65,6 @@ import { ElNotification } from "element-plus";
 
 import { useCookies } from "@vueuse/integrations/useCookies";
 
-
 // import { User, Lock } from "@element-plus/icons-vue";
 // do not use same name with ref
 const form = reactive({
@@ -58,10 +72,8 @@ const form = reactive({
   password: "",
 });
 const router = useRouter();
-const cookie = useCookies()
-
-
-
+const cookie = useCookies();
+const loading = ref(false);
 //定义用户名和密码的规则验证
 const rules = {
   username: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
@@ -74,6 +86,7 @@ const onSubmit = () => {
     if (!valid) {
       return;
     }
+    loading.value = true;
     login(form.username, form.password)
       .then((res) => {
         console.log(res);
@@ -84,14 +97,19 @@ const onSubmit = () => {
           duration: 3000,
         });
         // 存储token
-        cookie.set("admin-cookie", res.token)
+        // cookie.set("admin-cookie", res.token);
+        window.localStorage.setItem("admin-token", res.token);
+        // console.log(localStorage.getItem("admin-token"));
         // 获取用户信息
-        getInfo().then(res2 => {
+        getInfo().then((res2) => {
           console.log(res2);
-        })
+        });
         // 跳转到后台首页
         router.push("/");
       })
+      .finally(() => {
+        loading.value = false;
+      });
   });
 };
 </script>
