@@ -57,13 +57,14 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted, onBeforeUnmount } from "vue";
 
-import { login, getInfo } from "~/api/manager";
+import { login } from "~/api/manager";
 import { useRouter } from "vue-router";
-import { ElNotification } from "element-plus";
+import { useStore } from "vuex";
 
-import { useCookies } from "@vueuse/integrations/useCookies";
+import { toast } from "~/composables/util";
+import { setToken } from "~/composables/auth";
 
 // import { User, Lock } from "@element-plus/icons-vue";
 // do not use same name with ref
@@ -71,8 +72,9 @@ const form = reactive({
   username: "",
   password: "",
 });
+const store = useStore();
 const router = useRouter();
-const cookie = useCookies();
+
 const loading = ref(false);
 //定义用户名和密码的规则验证
 const rules = {
@@ -91,19 +93,13 @@ const onSubmit = () => {
       .then((res) => {
         console.log(res);
         // 提示成功
-        ElNotification({
-          message: "登录成功",
-          type: "success",
-          duration: 3000,
-        });
+        toast("登录成功");
         // 存储token
         // cookie.set("admin-cookie", res.token);
-        window.localStorage.setItem("admin-token", res.token);
+        // window.localStorage.setItem("admin-token", res.token);
+        setToken(res.token);
         // console.log(localStorage.getItem("admin-token"));
-        // 获取用户信息
-        getInfo().then((res2) => {
-          console.log(res2);
-        });
+
         // 跳转到后台首页
         router.push("/");
       })
@@ -112,6 +108,22 @@ const onSubmit = () => {
       });
   });
 };
+
+// 监听回车事件
+function onKeyUp(e) {
+  if (e.key == "Enter") {
+    onSubmit();
+  }
+}
+
+// 添加键盘监听
+onMounted(() => {
+  document.addEventListener("keyup", onKeyUp);
+});
+//移除键盘监听
+onBeforeUnmount(() => {
+  document.removeEventListener("keyup", onKeyUp);
+});
 </script>
 
 <style></style>

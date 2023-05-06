@@ -1,6 +1,6 @@
 import axios from "axios";
-import { ElNotification } from "element-plus";
-import { useCookies } from "@vueuse/integrations/useCookies";
+import { toast } from "~/composables/util";
+import { getToken } from "~/composables/auth";
 
 const service = axios.create({
   baseURL: "/api",
@@ -14,8 +14,9 @@ service.interceptors.request.use(
 
     // 获取token
     // console.log(localStorage.getItem("admin-token"));
-    const token = localStorage.getItem("admin-token");
-    console.log(token);
+    // const token = localStorage.getItem("admin-token");
+    const token = getToken();
+    // console.log(token);
     if (token) {
       config.headers["token"] = token;
     }
@@ -38,11 +39,8 @@ service.interceptors.response.use(
   function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
-    ElNotification({
-      message: error.response.data.msg || "请求失败",
-      type: "error",
-      duration: 3000,
-    });
+    toast(error.response.data.msg || "请求失败", "error");
+
     return Promise.reject(error);
   }
 );
