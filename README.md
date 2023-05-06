@@ -14,4 +14,4 @@ cd mouse-sales
 
 npm install
 
-npm dev
+npm run dev
