@@ -1,5 +1,7 @@
 import { createStore } from "vuex";
 import { getInfo } from "../api/manager";
+import { removeToken } from "~/composables/auth";
+
 // Create a new store instance.
 const store = createStore({
   state() {
@@ -25,6 +27,14 @@ const store = createStore({
           })
           .catch((err) => reject(err));
       });
+    },
+
+    // 退出登录
+    logout({ commit }) {
+      // 移除token
+      removeToken();
+      // 清楚当前用户状态 vuex
+      commit("SET_USERINFO", {});
     },
   },
 });
