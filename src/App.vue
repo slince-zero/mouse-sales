@@ -4,4 +4,9 @@
   <RouterView></RouterView>
 </template>
 
-<style></style>
+<style>
+#nprogress .bar {
+  background-color: #29d !important;
+  height: 3px !important;
+}
+</style>

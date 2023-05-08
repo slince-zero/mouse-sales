@@ -1,9 +1,11 @@
 import router from "~/router";
-import { toast } from "~/composables/util";
+import { toast, showFullLoading, hiddenFullLoading } from "~/composables/util";
 import store from "./store";
 
 // 全局前置守卫
 router.beforeEach(async (to, from, next) => {
+  showFullLoading();
+
   // 获取token
   const token = localStorage.getItem("admin-token");
   console.log(token);
@@ -24,5 +26,12 @@ router.beforeEach(async (to, from, next) => {
     await store.dispatch("getInfo");
   }
 
+  // 设置页面标题
+  let title = (to.meta.title ? to.meta.title : "") + "-小鼠销售平台";
+  document.title = title;
+
   next();
 });
+
+// 全局后置守卫
+router.afterEach((to, from) => hiddenFullLoading());

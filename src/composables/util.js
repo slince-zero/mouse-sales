@@ -1,5 +1,5 @@
 import { ElNotification, ElMessageBox } from "element-plus";
-
+import nProgress from "nprogress";
 // 成功提示
 export function toast(message, type = "success") {
   ElNotification({
@@ -16,4 +16,13 @@ export function showModal(content = "提示内容", type = "warning", title = ""
     cancelButtonText: "Cancel",
     type,
   });
+}
+
+// 显示全屏loading
+export function showFullLoading() {
+  nProgress.start();
+}
+// 隐藏全屏loading
+export function hiddenFullLoading() {
+  nProgress.done();
 }

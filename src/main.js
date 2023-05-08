@@ -8,6 +8,7 @@ import router from "./router";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import store from "./store";
 import "./permission";
+import "nprogress/nprogress.css";
 
 const app = createApp(App);
 

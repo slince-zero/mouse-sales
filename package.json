@@ -13,10 +13,11 @@
     "@vueuse/integrations": "^10.1.2",
     "axios": "^1.4.0",
     "element-plus": "^2.3.4",
+    "nprogress": "^0.2.0",
     "universal-cookie": "^4.0.4",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6",
-    "vuex": "^4.0.2"
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.1.0",
