@@ -8,11 +8,15 @@
             <fold></fold>
         </el-icon>
         <el-icon class="icon-btn">
-            <refresh></refresh>
+            <refresh @click="handleRefresh"></refresh>
         </el-icon>
+
         <div class="ml-auto flex items-center">
-            <el-icon class="icon-btn"><full-screen></full-screen></el-icon>
-            <el-dropdown class="dropdown">
+            <el-icon class="icon-btn">
+                <full-screen @click="toggle" v-if="!isFullscreen"></full-screen>
+                <SwitchFilled v-else />
+            </el-icon>
+            <el-dropdown class="dropdown" @command="handleCommand">
                 <span class="flex items-center text-light-50">
                     <el-avatar class="mr-2" :size="25" :src="$store.state.user.avatar"></el-avatar>
                     {{ $store.state.user.username }}
@@ -22,8 +26,8 @@
                 </span>
                 <template #dropdown>
                     <el-dropdown-menu>
-                        <el-dropdown-item>修改密码</el-dropdown-item>
-                        <el-dropdown-item>退出登录</el-dropdown-item>
+                        <el-dropdown-item command="rePassword">修改密码</el-dropdown-item>
+                        <el-dropdown-item command="logout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
@@ -32,6 +36,46 @@
 </template>
 
 <script setup>
+
+import { showModal, toast } from "~/composables/util";
+import { logout } from "~/api/manager";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+import { useFullscreen } from '@vueuse/core'
+
+const { isFullscreen, toggle } = useFullscreen()
+const router = useRouter();
+const store = useStore();
+//退出功能
+const handleCommand = (c) => {
+    switch (c) {
+        case "logout":
+            handleLogout();
+            break;
+        case "rePassword":
+            console.log(12);
+        default:
+            break;
+    }
+}
+
+function handleLogout() {
+    showModal("是否要退出登录").then((res) => {
+        logout().finally(() => {
+            store.dispatch("logout");
+            // 跳转回登录页面
+            router.push("/login");
+            // 提示退出成功
+            toast("退出成功");
+        });
+    });
+}
+
+
+// 刷新页面功能
+function handleRefresh() {
+    location.reload()
+}
 </script>
 
 <style >
@@ -58,8 +102,13 @@
 }
 
 .f-header .dropdown {
-    height: 62px;
     cursor: pointer;
-    @apply flex justify-center ieems-center mx-5;
+    @apply flex justify-center ieems-center mx-5 border-style: none;
+    height: 60px;
+}
+
+.f-header .dropdown:hover {
+    @apply bg-indigo-500;
+    background: none;
 }
 </style>
