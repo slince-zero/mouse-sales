@@ -22,14 +22,12 @@
   </div>
 </template>
 
-<script setup>
-
-</script>
+<script setup></script>
 
 <style>
 /* 怎么把外层的那个框框给去掉，猜想：套了一层div */
-.dropdown:hover {
+/* .dropdown:hover {
   background-color: aquamarine;
 
-}
+} */
 </style>

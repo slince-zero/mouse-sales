@@ -38,46 +38,7 @@
     </div>
   </div>
 
-  <el-drawer
-    v-model="showDrawer"
-    title="修改密码"
-    size="30%"
-    :close-on-click-modal="false"
-  >
-    <span>
-      <el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item prop="oldpassword" label="旧密码">
-          <el-input
-            v-model="form.oldpassword"
-            placeholder="请输入旧密码"
-            type="password"
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="password" label="新密码">
-          <el-input
-            v-model="form.password"
-            placeholder="请输入新密码"
-            type="password"
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="repassword" label="确认密码">
-          <el-input
-            v-model="form.repassword"
-            placeholder="请再次输入新密码"
-            type="password"
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit" :loading="loading"
-            >提 交</el-button
-          >
-        </el-form-item>
-      </el-form>
-    </span>
-  </el-drawer>
+  <form-drawer ref="formDrawerRef" style="height: px">12</form-drawer>
 </template>
 
 <script setup>
@@ -87,6 +48,7 @@ import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { useFullscreen } from "@vueuse/core";
 import { ref, reactive } from "vue";
+import FormDrawer from "./FormDrawer.vue";
 
 const { isFullscreen, toggle } = useFullscreen();
 const router = useRouter();
@@ -98,7 +60,7 @@ const handleCommand = (c) => {
       handleLogout();
       break;
     case "rePassword":
-      showDrawer.value = true;
+      formDrawerRef.value.open();
     default:
       break;
   }
@@ -122,6 +84,7 @@ function handleRefresh() {
 }
 
 // 修改密码抽屉
+const formDrawerRef = ref();
 const showDrawer = ref(false);
 const form = reactive({
   oldpassword: "",
@@ -185,11 +148,11 @@ const onSubmit = () => {
 .f-header .dropdown {
   cursor: pointer;
   @apply flex justify-center items-center mx-5;
-  height: 60px;
+  height: 64px;
 }
 
-.f-header .dropdown:hover {
+/* .f-header .dropdown:hover {
   @apply bg-indigo-500;
   background: none;
-}
+} */
 </style>
