@@ -38,7 +38,42 @@
     </div>
   </div>
 
-  <form-drawer ref="formDrawerRef" style="height: px">12</form-drawer>
+  <form-drawer
+    ref="formDrawerRef"
+    title="修改密码"
+    destoryOnClose
+    @submit="onSubmit"
+  >
+    <el-form
+      ref="formRef"
+      :rules="rules"
+      :model="form"
+      label-width="80px"
+      size="small"
+    >
+      <el-form-item prop="oldPassword" label="旧密码">
+        <el-input
+          v-model="form.oldpassword"
+          placeholder="请输入旧密码"
+          showPassword
+        ></el-input>
+      </el-form-item>
+      <el-form-item prop="Password" label="新密码">
+        <el-input
+          v-model="form.password"
+          placeholder="请输入新密码"
+          showPassword
+        ></el-input>
+      </el-form-item>
+      <el-form-item prop="rePassword" label="确认密码">
+        <el-input
+          v-model="form.repassword"
+          placeholder="请输入确认密码"
+          showPassword
+        ></el-input>
+      </el-form-item>
+    </el-form>
+  </form-drawer>
 </template>
 
 <script setup>
