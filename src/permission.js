@@ -8,7 +8,7 @@ router.beforeEach(async (to, from, next) => {
 
   // 获取token
   const token = localStorage.getItem("admin-token");
-  console.log(token);
+  // console.log(token);
   if (!token && to.path != "/login") {
     toast("请先登录", "error");
     return next({ path: "/login" });

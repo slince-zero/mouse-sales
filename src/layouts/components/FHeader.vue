@@ -4,8 +4,9 @@
       <el-icon class="mr-2"><eleme-filled></eleme-filled></el-icon>
       小鼠销售
     </span>
-    <el-icon class="icon-btn">
-      <fold></fold>
+    <el-icon class="icon-btn" @click="$store.commit('handleAsideWidth')">
+      <fold v-if="$store.state.asideWidth == '250px'"></fold>
+      <expand v-else></expand>
     </el-icon>
     <el-icon class="icon-btn">
       <refresh @click="handleRefresh"></refresh>
