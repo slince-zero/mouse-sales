@@ -4,6 +4,7 @@ import Admin from "~/layouts/admin.vue";
 import Index from "~/pages/index.vue";
 import Login from "~/pages/login.vue";
 import NotFound from "~/pages/404.vue";
+import GoodList from "~/pages/goods/list.vue";
 
 const routes = [
   {
@@ -16,6 +17,13 @@ const routes = [
         component: Index,
         meta: {
           title: "后台首页",
+        },
+      },
+      {
+        path: "/goods/list",
+        component: GoodList,
+        meta: {
+          title: "商城管理页面",
         },
       },
     ],
