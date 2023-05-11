@@ -69,8 +69,7 @@ const submit = () => emit("submit");
 }
 .formDrawer {
   width: 100%;
-  height: 100%;
-  position: relative;
+  height: 93%;
   /* @apply flex flex-col; */
   display: flex;
   /* overflow: hidden; */
@@ -78,16 +77,11 @@ const submit = () => emit("submit");
 
 .formDrawer .body {
   flex: 1;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 50px;
   overflow-y: auto;
   /* overflow: scroll; */
 }
 .formDrawer .actions {
-  height: 50px;
+  height: 7%;
   @apply mt-auto  items-center;
 }
 </style>
