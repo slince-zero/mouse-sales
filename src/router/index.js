@@ -10,31 +10,8 @@ import CategoryList from "~/pages/category/list.vue";
 const routes = [
   {
     path: "/",
+    name: "admin",
     component: Admin,
-    // 子路由，以后其他页面都放在这里
-    children: [
-      {
-        path: "/",
-        component: Index,
-        meta: {
-          title: "后台首页",
-        },
-      },
-      {
-        path: "/goods/list",
-        component: GoodList,
-        meta: {
-          title: "商城管理页面",
-        },
-      },
-      {
-        path: "/category/list",
-        component: CategoryList,
-        meta: {
-          title: "分类列表",
-        },
-      },
-    ],
   },
   {
     path: "/login",
@@ -50,9 +27,55 @@ const routes = [
   },
 ];
 
-const router = createRouter({
+// 动态路由，用于匹配菜单动态添加路由
+const asyncRoutes = [
+  {
+    path: "/",
+    name: "/",
+    component: Index,
+    meta: {
+      title: "后台首页",
+    },
+  },
+  {
+    path: "/goods/list",
+    name: "/goods/list",
+    component: GoodList,
+    meta: {
+      title: "商城管理页面",
+    },
+  },
+  {
+    path: "/category/list",
+    name: "/category/list",
+    component: CategoryList,
+    meta: {
+      title: "分类列表",
+    },
+  },
+];
+
+export const router = createRouter({
   history: createWebHashHistory(),
   routes: routes,
 });
 
-export default router;
+// 动态添加路由的方法
+export function addRoutes(menus) {
+  console.log(menus);
+  const findAndAddRoutesByMenus = (arr) => {
+    arr.forEach((e) => {
+      let item = asyncRoutes.find((o) => o.path == e.frontpath);
+      if (item && router.hasRoute(item.path)) {
+        router.addRoute("admin", item);
+      }
+      if (e.child && e.child.length > 0) {
+        findAndAddRoutesByMenus(e.child);
+      }
+    });
+  };
+
+  findAndAddRoutesByMenus(menus);
+
+  console.log(router.getRoutes());
+}

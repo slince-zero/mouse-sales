@@ -1,4 +1,4 @@
-import router from "~/router";
+import { router, addRoutes } from "~/router";
 import { toast, showFullLoading, hiddenFullLoading } from "~/composables/util";
 import store from "./store";
 
@@ -14,16 +14,18 @@ router.beforeEach(async (to, from, next) => {
     return next({ path: "/login" });
   }
 
-  //防止重复登录
+  // 防止重复登录
   if (token && to.path == "/login") {
     toast("别重复登录阿", "error");
     return next({ path: from.path ? from.path : "/" });
   }
 
-  //如果用户登录了，自动获取用户信息，存储在vuex中
+  // 如果用户登录了，自动获取用户信息，存储在vuex中
 
   if (token) {
-    await store.dispatch("getInfo");
+    let { menus } = await store.dispatch("getInfo");
+    // 动态添加路由
+    addRoutes(menus);
   }
 
   // 设置页面标题
