@@ -21,18 +21,18 @@ router.beforeEach(async (to, from, next) => {
   }
 
   // 如果用户登录了，自动获取用户信息，存储在vuex中
-
+  let hasNewRoutes = false;
   if (token) {
     let { menus } = await store.dispatch("getInfo");
     // 动态添加路由
-    addRoutes(menus);
+    hasNewRoutes = addRoutes(menus);
   }
 
   // 设置页面标题
   let title = (to.meta.title ? to.meta.title : "") + "-小鼠销售平台";
   document.title = title;
 
-  next();
+  hasNewRoutes ? next(to.fullPath) : next();
 });
 
 // 全局后置守卫

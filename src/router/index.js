@@ -7,6 +7,7 @@ import NotFound from "~/pages/404.vue";
 import GoodList from "~/pages/goods/list.vue";
 import CategoryList from "~/pages/category/list.vue";
 
+// 默认路由，所有用户共享
 const routes = [
   {
     path: "/",
@@ -62,12 +63,14 @@ export const router = createRouter({
 
 // 动态添加路由的方法
 export function addRoutes(menus) {
-  console.log(menus);
+  // 是否有新路由
+  let hasNewRoutes = false;
   const findAndAddRoutesByMenus = (arr) => {
     arr.forEach((e) => {
       let item = asyncRoutes.find((o) => o.path == e.frontpath);
-      if (item && router.hasRoute(item.path)) {
+      if (item && !router.hasRoute(item.path)) {
         router.addRoute("admin", item);
+        hasNewRoutes = true;
       }
       if (e.child && e.child.length > 0) {
         findAndAddRoutesByMenus(e.child);
@@ -77,5 +80,5 @@ export function addRoutes(menus) {
 
   findAndAddRoutesByMenus(menus);
 
-  console.log(router.getRoutes());
+  return hasNewRoutes;
 }
