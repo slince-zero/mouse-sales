@@ -19,12 +19,16 @@
                   <el-skeleton-item variant="text" style="width: 10%" />
                 </div>
               </el-card>
-
             </template>
           </el-skeleton>
         </el-col>
       </template>
-      <el-col :span="6" :offset="0" v-for="(item, index) in panels" :key="index">
+      <el-col
+        :span="6"
+        :offset="0"
+        v-for="(item, index) in panels"
+        :key="index"
+      >
         <el-card shadow="hover" class="border-0">
           <template #header>
             <div class="flex justify-between">
@@ -35,7 +39,7 @@
             </div>
           </template>
           <span class="text-3xl font-blod text-gray-500">
-            {{ item.value }}
+            <CountTo :value="item.value" />
           </span>
           <el-divider />
           <div class="flex justify-between text-sm text-gray-500">
@@ -45,20 +49,21 @@
         </el-card>
       </el-col>
     </el-row>
-
   </div>
+  <IndexNavs></IndexNavs>
 </template>
 
 <script setup>
-import { getStatistics1 } from '~/api/index.js';
-import { ref } from 'vue';
+import { getStatistics1 } from "~/api/index.js";
+import { ref } from "vue";
+import CountTo from "~/components/CountTo.vue";
+import IndexNavs from "~/components/IndexNavs.vue";
 
-const panels = ref([])
-getStatistics1()
-  .then(res => {
-    panels.value = res.panels
-    console.log(panels.value);
-  })
+const panels = ref([]);
+getStatistics1().then((res) => {
+  panels.value = res.panels;
+  console.log(panels.value);
+});
 </script>
 
 <style></style>
