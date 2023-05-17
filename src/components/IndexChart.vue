@@ -1,24 +1,26 @@
 <template>
-  <el-card shadow="never">
-    <template #header>
-      <div class="felx justify-center">
-        <span class="text-sm">订单统计</span>
-        <div>
-          <el-check-tag
-            v-for="(item, index) in options"
-            :key="index"
-            :checked="current == item.value"
-            style="margin-right: 8px"
-            @click="handleChoose(item.value)"
-          >
-            {{ item.text }}
-          </el-check-tag>
+  <div>
+    <el-card shadow="never">
+      <template #header>
+        <div class="felx justify-center">
+          <span class="text-sm">订单统计</span>
+          <div>
+            <el-check-tag
+              v-for="(item, index) in options"
+              :key="index"
+              :checked="current == item.value"
+              style="margin-right: 8px"
+              @click="handleChoose(item.value)"
+            >
+              {{ item.text }}
+            </el-check-tag>
+          </div>
         </div>
-      </div>
-    </template>
-    <!-- card body -->
-    <div ref="el" id="chart" style="width: 100%; height: 300px"></div>
-  </el-card>
+      </template>
+      <!-- card body -->
+      <div ref="el" id="chart" style="width: 100%; height: 300px"></div>
+    </el-card>
+  </div>
 </template>
 
 <script setup>

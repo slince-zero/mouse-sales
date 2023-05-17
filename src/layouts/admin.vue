@@ -11,9 +11,11 @@
         <f-tag-list></f-tag-list>
         <router-view v-slot="{ Component }">
           <transition name="fade">
-            <keep-alive :max="10">
-              <component :is="Component"></component>
-            </keep-alive>
+            <div>
+              <keep-alive :max="10">
+                <component :is="Component"></component>
+              </keep-alive>
+            </div>
           </transition>
         </router-view>
       </el-main>
