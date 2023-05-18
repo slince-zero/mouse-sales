@@ -21,12 +21,15 @@
       />
     </div>
   </el-aside>
+
+  <FormDrawer title="新增" ref="formDrawerRef" @submit="handleSubmit">
+  </FormDrawer>
 </template>
 <script setup>
 import { ref } from "vue";
 import AsideList from "~/components/AsideList.vue";
 import { getImageClassList } from "~/api/image_class.js";
-
+import FormDrawer from "../layouts/components/FormDrawer.vue";
 // 加载动画
 const loading = ref(false);
 // 数据列表
@@ -60,6 +63,16 @@ function getData(p = null) {
     });
 }
 getData();
+
+const formDrawerRef = ref();
+const handleCreate = () => formDrawerRef.value.open();
+const handleSubmit = () => {
+  console.log(11);
+};
+
+defineExpose({
+  handleCreate,
+});
 </script>
 <style>
 .image-aside {
