@@ -1,7 +1,7 @@
 <!-- 抽离图库列表组件 -->
 <template>
   <div class="aside-list" :class="{ active: active }">
-    <span class="truncate">分类标题</span>
+    <span class="truncate"><slot /></span>
     <el-button
       class="ml-auto px-0"
       text
