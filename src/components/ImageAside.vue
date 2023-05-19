@@ -7,6 +7,7 @@
         :actived="activeId == item.id"
         v-for="(item, index) in list"
         :key="index"
+        @edit="handleEdit(item)"
         >{{ item.name }}</AsideList
       >
     </div>
@@ -23,13 +24,32 @@
   </el-aside>
 
   <FormDrawer title="新增" ref="formDrawerRef" @submit="handleSubmit">
+    <el-form
+      :model="form"
+      ref="formRef"
+      :rules="rules"
+      label-width="80px"
+      :inline="false"
+    >
+      <el-form-item label="分类名称" prop="name">
+        <el-input v-model="form.name"></el-input>
+      </el-form-item>
+      <el-form-item label="排序" prop="order">
+        <el-input-number
+          v-model="form.order"
+          :min="0"
+          :max="1000"
+        ></el-input-number>
+      </el-form-item>
+    </el-form>
   </FormDrawer>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import AsideList from "~/components/AsideList.vue";
-import { getImageClassList } from "~/api/image_class.js";
-import FormDrawer from "../layouts/components/FormDrawer.vue";
+import { getImageClassList, createImageClass } from "~/api/image_class.js";
+import FormDrawer from "~/layouts/components/FormDrawer.vue";
+import { toast } from "~/composables/util.js";
 // 加载动画
 const loading = ref(false);
 // 数据列表
@@ -60,19 +80,45 @@ function getData(p = null) {
     })
     .finally(() => {
       loading.value = false;
+      console.log();
     });
 }
 getData();
 
 const formDrawerRef = ref();
 const handleCreate = () => formDrawerRef.value.open();
-const handleSubmit = () => {
-  console.log(11);
-};
 
 defineExpose({
   handleCreate,
 });
+
+const form = reactive({
+  name: "",
+  order: 50,
+});
+
+const formRef = ref();
+const handleSubmit = () => {
+  formRef.value.validate((valid) => {
+    if (!valid) return;
+    createImageClass(form).then((res) => {
+      console.log(res);
+      toast("新增成功");
+      getData(1);
+      formDrawerRef.value.close();
+    });
+  });
+};
+
+const rules = {
+  name: [
+    {
+      required: true,
+      message: "图库分类名称不能为空",
+      trigger: "blur",
+    },
+  ],
+};
 </script>
 <style>
 .image-aside {

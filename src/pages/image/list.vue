@@ -21,7 +21,7 @@ const h = windowHeight - 64 - 44 - 40;
 
 const ImageAsideRef = ref();
 const handleOpenCreate = () => {
-  console.log(ImageAside.value);
+  ImageAsideRef.value.handleCreate();
 };
 </script>
 
