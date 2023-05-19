@@ -7,7 +7,7 @@
       text
       type="primary"
       size="small"
-      @clcik="$emit('edit')"
+      @click="$emit('edit')"
     >
       <el-icon :size="12"><Edit></Edit> </el-icon>
     </el-button>

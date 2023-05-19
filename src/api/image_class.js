@@ -13,5 +13,5 @@ export function createImageClass(data) {
 
 // 更新
 export function updateImageClass(id, data) {
-  return axios.post("/admin/image_class", id, data);
+  return axios.post("/admin/image_class/" + id, data);
 }

@@ -23,7 +23,7 @@
     </div>
   </el-aside>
 
-  <FormDrawer title="新增" ref="formDrawerRef" @submit="handleSubmit">
+  <FormDrawer :title="drawerTitle" ref="formDrawerRef" @submit="handleSubmit">
     <el-form
       :model="form"
       ref="formRef"
@@ -45,9 +45,13 @@
   </FormDrawer>
 </template>
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
 import AsideList from "~/components/AsideList.vue";
-import { getImageClassList, createImageClass } from "~/api/image_class.js";
+import {
+  getImageClassList,
+  createImageClass,
+  updateImageClass,
+} from "~/api/image_class.js";
 import FormDrawer from "~/layouts/components/FormDrawer.vue";
 import { toast } from "~/composables/util.js";
 // 加载动画
@@ -84,9 +88,15 @@ function getData(p = null) {
     });
 }
 getData();
-
+const drawerTitle = computed(() => (editId.value ? "修改" : "新增"));
+const editId = ref(0);
 const formDrawerRef = ref();
-const handleCreate = () => formDrawerRef.value.open();
+const handleCreate = () => {
+  editId.value = 0;
+  form.name = "";
+  form.order = 50;
+  formDrawerRef.value.open();
+};
 
 defineExpose({
   handleCreate,
@@ -98,12 +108,17 @@ const form = reactive({
 });
 
 const formRef = ref();
+
+// 新增
 const handleSubmit = () => {
   formRef.value.validate((valid) => {
     if (!valid) return;
-    createImageClass(form).then((res) => {
-      console.log(res);
-      toast("新增成功");
+
+    const fun = editId.value
+      ? updateImageClass(editId.value, form)
+      : createImageClass(form);
+    fun.then((res) => {
+      toast(drawerTitle.value + "成功");
       getData(1);
       formDrawerRef.value.close();
     });
@@ -118,6 +133,14 @@ const rules = {
       trigger: "blur",
     },
   ],
+};
+
+// 编辑
+const handleEdit = (row) => {
+  editId.value = row.id;
+  form.name = row.name;
+  form.order = row.order;
+  formDrawerRef.value.open();
 };
 </script>
 <style>
