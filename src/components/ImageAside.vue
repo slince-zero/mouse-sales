@@ -4,10 +4,11 @@
     <!-- Aside -->
     <div class="top">
       <AsideList
-        :actived="activeId == item.id"
         v-for="(item, index) in list"
+        :actived="activeId == item.id"
         :key="index"
         @edit="handleEdit(item)"
+        @delete="handleDelete(item.id)"
         >{{ item.name }}</AsideList
       >
     </div>
@@ -51,6 +52,7 @@ import {
   getImageClassList,
   createImageClass,
   updateImageClass,
+  deleteImageClass,
 } from "~/api/image_class.js";
 import FormDrawer from "~/layouts/components/FormDrawer.vue";
 import { toast } from "~/composables/util.js";
@@ -58,7 +60,7 @@ import { toast } from "~/composables/util.js";
 const loading = ref(false);
 // 数据列表
 const list = ref([]);
-const activeId = ref(0);
+const activeId = ref();
 
 // 分页--当前页
 const currentPage = ref(1);
@@ -142,7 +144,17 @@ const handleEdit = (row) => {
   form.order = row.order;
   formDrawerRef.value.open();
 };
+
+// 删除
+const handleDelete = (id) => {
+  console.log(123);
+  deleteImageClass(id).then((res) => {
+    toast("删除成功");
+    getData();
+  });
+};
 </script>
+
 <style>
 .image-aside {
   border-right: 1px solid #eeeeee;
