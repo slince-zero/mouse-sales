@@ -9,6 +9,7 @@
         :key="index"
         @edit="handleEdit(item)"
         @delete="handleDelete(item.id)"
+        @click="handleChangeActiveId(item.id)"
         >{{ item.name }}</AsideList
       >
     </div>
@@ -153,6 +154,11 @@ const handleDelete = (id) => {
     getData();
   });
 };
+
+// 选中图库分类ID 切换分类
+function handleChangeActiveId(id) {
+  activeId.value = id;
+}
 </script>
 
 <style>
