@@ -6,8 +6,8 @@
       >
     </el-header>
     <el-container>
-      <ImageAside ref="ImageAsideRef"></ImageAside>
-      <ImageMain></ImageMain>
+      <ImageAside ref="ImageAsideRef" @change="handleAsideChange"></ImageAside>
+      <ImageMain ref="ImageMainRef"></ImageMain>
     </el-container>
   </el-container>
 </template>
@@ -18,10 +18,14 @@ import ImageAside from "~/components/ImageAside.vue";
 import ImageMain from "~/components/ImageMain.vue";
 const windowHeight = window.innerHeight || document.body.clientHeight;
 const h = windowHeight - 64 - 44 - 40;
-
+const ImageMainRef = ref();
 const ImageAsideRef = ref();
 const handleOpenCreate = () => {
   ImageAsideRef.value.handleCreate();
+};
+
+const handleAsideChange = (image_class_id) => {
+  ImageMainRef.value.loadData(image_class_id);
 };
 </script>
 

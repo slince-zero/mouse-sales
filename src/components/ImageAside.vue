@@ -61,7 +61,6 @@ import { toast } from "~/composables/util.js";
 const loading = ref(false);
 // 数据列表
 const list = ref([]);
-const activeId = ref();
 
 // 分页--当前页
 const currentPage = ref(1);
@@ -82,7 +81,7 @@ function getData(p = null) {
       list.value = res.list;
       let item = list.value[0];
       if (item) {
-        activeId.value = item.id;
+        handleChangeActiveId(item.id);
       }
     })
     .finally(() => {
@@ -156,8 +155,11 @@ const handleDelete = (id) => {
 };
 
 // 选中图库分类ID 切换分类
+const activeId = ref();
+const emit = defineEmits(["change"]);
 function handleChangeActiveId(id) {
   activeId.value = id;
+  emit("change", id);
 }
 </script>
 
