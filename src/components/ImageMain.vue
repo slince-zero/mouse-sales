@@ -4,47 +4,35 @@
     <div class="top">
       <!-- <div >{{ item.url }}</div> -->
       <el-row :gutter="10">
-        <el-col
-          :span="6"
-          :offset="0"
-          v-for="(item, index) in list"
-          :key="index"
-        >
-          <el-card
-            shadow="hover"
-            class="relative mb-3"
-            :body-style="{ padding: 0 }"
-          >
-            <el-image
-              :src="item.url"
-              fit="cover"
-              class="w-full h-[150px]"
-            ></el-image>
+        <el-col :span="6" :offset="0" v-for="(item, index) in list" :key="index">
+          <el-card shadow="hover" class="relative mb-3" :body-style="{ padding: 0 }">
+            <el-image :src="item.url" fit="cover" class="w-full h-[150px]" :preview-src-list="[item.url]"
+              :initial-index="0"></el-image>
             <div class="image-title">{{ item.name }}</div>
             <div class="felx items-center justify-center p-2">
-              <el-button type="primary" size="small" text>重命名</el-button>
-              <el-button type="primary" size="small" text>删除</el-button>
+              <el-button type="primary" size="small" text @click="handleEdit(item)">重命名</el-button>
+              <el-popconfirm title="是否要删除该图片?" confirmButtonText="确认" cancelButtonText="取消"
+                @confirm="handleDelete(item.id)">
+                <template #reference>
+                  <el-button type="primary" size="small" text>删除</el-button>
+                </template>
+              </el-popconfirm>
             </div>
           </el-card>
         </el-col>
       </el-row>
     </div>
     <div class="bottom">
-      <el-pagination
-        background
-        layout="prev, pager,next"
-        :total="total"
-        :current-page="currentPage"
-        :page-size="limit"
-        @current-change="getData"
-      ></el-pagination>
+      <el-pagination background layout="prev, pager,next" :total="total" :current-page="currentPage" :page-size="limit"
+        @current-change="getData"></el-pagination>
     </div>
   </el-main>
 </template>
 
 <script setup>
-import { getImageList } from "~/api/image.js";
+import { getImageList, updateImage, deleteImage } from "~/api/image.js";
 import { ref } from "vue";
+import { showPropt, toast } from "~/composables/util.js"
 const currentPage = ref(1);
 const total = ref(0);
 const limit = ref(10);
@@ -78,6 +66,37 @@ const loadData = (id) => {
 defineExpose({
   loadData,
 });
+
+// 重命名图片
+const handleEdit = (item) => {
+  showPropt("重命名", item.name)
+    .then(({ value }) => {
+      Loading.value = true
+      updateImage(item.id, value)
+        .then(res => {
+          toast("修改成功")
+          getData()
+        })
+        .finally(() => {
+          Loading.value = false
+        })
+    })
+
+}
+
+
+// 删除图片
+const handleDelete = (id) => {
+  Loading.value = true;
+  deleteImage([id])
+    .then(res => {
+      toast("删除成功")
+      getData()
+    })
+    .finally(() => {
+      Loading.value = false
+    })
+}
 </script>
 
 <style>
