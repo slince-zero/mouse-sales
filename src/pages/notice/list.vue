@@ -2,7 +2,9 @@
   <el-card shadow="never" class="border-0">
     <!-- 新增、刷新 -->
     <div class="flex items-center justify-between mb-4">
-      <el-button type="primary" size="small">新增</el-button>
+      <el-button type="primary" size="small" @click="handleCreate"
+        >新增</el-button
+      >
       <el-tooltip effect="dark" content="刷新数据" placement="top-start">
         <el-button text @click="getData">
           <el-icon :size="20">
@@ -32,23 +34,49 @@
         </template>
       </el-table-column>
     </el-table>
-  </el-card>
 
-  <div class="flex justify-center items-center mt-5">
-    <el-pagination
-      background
-      layout="prev, pager, next"
-      :total="total"
-      :current-page="currentPage"
-      :page-size="limit"
-      @current-change="getData"
-    />
-  </div>
+    <!-- 分页 -->
+    <div class="flex justify-center items-center mt-5">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="total"
+        :current-page="currentPage"
+        :page-size="limit"
+        @current-change="getData"
+      />
+    </div>
+
+    <!-- 新增数据的框框 -->
+    <FormDrawer ref="formDrawerRef" title="新增" @submit="handleSubmit">
+      <el-form
+        :model="form"
+        ref="formRef"
+        :rules="rules"
+        label-width="80px"
+        :inline="false"
+      >
+        <el-form-item label="公告标题" prop="title">
+          <el-input v-model="form.title" placeholder="公告标题"></el-input>
+        </el-form-item>
+        <el-form-item label="公告内容" prop="content">
+          <el-input
+            v-model="form.content"
+            placeholder="公告内容"
+            type="textarea"
+            :rows="5"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+    </FormDrawer>
+  </el-card>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { getNoticeList } from "~/api/notice.js";
+import { ref, reactive } from "vue";
+import { getNoticeList, createNotice } from "~/api/notice.js";
+import { toast } from "~/composables/util";
+import FormDrawer from "~/layouts/components/FormDrawer.vue";
 const tableData = ref([]);
 const loading = ref(false);
 
@@ -80,5 +108,31 @@ getData();
 // 删除一条数据
 const handleDelete = (id) => {
   console.log(id);
+};
+
+// 新增
+const formRef = ref();
+const form = reactive({
+  title: "",
+  content: "",
+});
+const rules = {
+  title: [{ required: true, message: "公告名称不能为空", trigger: "blur" }],
+  content: [{ required: true, message: "内容不能为空", trigger: "blur" }],
+};
+const formDrawerRef = ref();
+const handleSubmit = () => {
+  formRef.value.validate((valid) => {
+    if (!valid) return;
+    createNotice(form).then((res) => {
+      toast("新增成功");
+      getData(1);
+      formDrawerRef.value.close();
+    });
+  });
+};
+
+const handleCreate = () => {
+  formDrawerRef.value.open();
 };
 </script>
