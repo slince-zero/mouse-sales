@@ -20,7 +20,13 @@
       <el-table-column prop="create_time" label="发布时间" width="380" />
       <el-table-column label="操作" width="180" align="center">
         <template #default="scope">
-          <el-button type="primary" size="small" text>修改</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            text
+            @click="handleEdit(scope.row)"
+            >修改</el-button
+          >
           <el-popconfirm
             title="是否要删除该分类?"
             confirmButtonText="确认"
@@ -48,7 +54,7 @@
     </div>
 
     <!-- 新增数据的框框 -->
-    <FormDrawer ref="formDrawerRef" title="新增" @submit="handleSubmit">
+    <FormDrawer ref="formDrawerRef" :title="drawerTitle" @submit="handleSubmit">
       <el-form
         :model="form"
         ref="formRef"
@@ -73,13 +79,19 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
-import { getNoticeList, createNotice } from "~/api/notice.js";
+import { ref, reactive, computed } from "vue";
+import {
+  getNoticeList,
+  createNotice,
+  updateNotice,
+  deleteNotice,
+} from "~/api/notice.js";
 import { toast } from "~/composables/util";
 import FormDrawer from "~/layouts/components/FormDrawer.vue";
 const tableData = ref([]);
 const loading = ref(false);
-
+const editId = ref(0);
+const drawerTitle = computed(() => (editId.value ? "修改" : "新增"));
 // 分页--当前页
 const currentPage = ref(1);
 // 分页--总页
@@ -105,9 +117,23 @@ function getData(p = null) {
 
 getData();
 
+// 重置表单
+function restForm(row = false) {
+  if (formRef.value) formRef.value.clearValidate();
+  if (row) {
+    for (const key in form) {
+      form[key] = row[key];
+    }
+  }
+}
+
 // 删除一条数据
 const handleDelete = (id) => {
   console.log(id);
+  deleteNotice(id).then((res) => {
+    toast("删除成功");
+    getData();
+  });
 };
 
 // 新增
@@ -124,15 +150,31 @@ const formDrawerRef = ref();
 const handleSubmit = () => {
   formRef.value.validate((valid) => {
     if (!valid) return;
-    createNotice(form).then((res) => {
-      toast("新增成功");
-      getData(1);
+    const fun = editId.value
+      ? updateNotice(editId.value, form)
+      : createNotice(form);
+    fun.then((res) => {
+      toast(drawerTitle.value + "成功");
+      // 修改刷新当前页，新增刷新第一页
+      getData(editId.value ? false : 1);
       formDrawerRef.value.close();
     });
   });
 };
 
 const handleCreate = () => {
+  editId.value = 0;
+  restForm({
+    title: "",
+    content: "",
+  });
+  formDrawerRef.value.open();
+};
+
+// 更新数据
+const handleEdit = (row) => {
+  editId.value = row.id;
+  restForm(row);
   formDrawerRef.value.open();
 };
 </script>

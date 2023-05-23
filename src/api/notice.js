@@ -10,3 +10,13 @@ export function getNoticeList(page) {
 export function createNotice(data) {
   return axios.post("/admin/notice", data);
 }
+
+// 修改数据
+export function updateNotice(id, data) {
+  return axios.post("/admin/notice/" + id, data);
+}
+
+// 删除数据
+export function deleteNotice(id) {
+  return axios.post(`/admin/notice/${id}/delete`);
+}
