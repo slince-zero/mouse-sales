@@ -1,5 +1,27 @@
 <template>
   <el-card shadow="never" class="border-0">
+    <!-- 搜索 -->
+    <el-form :model="searchForm" label-width="80px" class="mb-3">
+      <el-row :gutter="20">
+        <el-col :span="8" :offset="0">
+          <el-form-item label="关键词">
+            <el-input
+              v-model="searchForm.keyword"
+              placeholder="管理员昵称"
+              clearable
+            >
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" :offset="8">
+          <el-form-item>
+            <el-button type="primary" @click="getData">搜索</el-button>
+            <el-button @click="resetSearchForm">重置</el-button>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
+
     <!-- 新增、刷新 -->
     <div class="flex items-center justify-between mb-4">
       <el-button type="primary" size="small" @click="handleCreate"
@@ -118,6 +140,13 @@ import {
 import { getManagerList } from "~/api/manager";
 import { toast } from "~/composables/util";
 import FormDrawer from "~/layouts/components/FormDrawer.vue";
+const searchForm = reactive({
+  keyword: "",
+});
+const resetSearchForm = () => {
+  searchForm.keyword = "";
+  getData();
+};
 const tableData = ref([]);
 const loading = ref(false);
 const editId = ref(0);
@@ -135,7 +164,7 @@ function getData(p = null) {
     currentPage.value = p;
   }
   loading.value = true;
-  getManagerList(currentPage.value)
+  getManagerList(currentPage.value, searchForm)
     .then((res) => {
       tableData.value = res.list;
       total.value = res.totalCount;
