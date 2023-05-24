@@ -49,3 +49,18 @@ export function updateManagerStatus(id, status) {
     status,
   });
 }
+
+// 创建管理员
+export function createManager(data) {
+  return axios.post(`/admin/manager`, data);
+}
+
+// 更新信息
+export function updateManager(id, data) {
+  return axios.post(`/admin/manager/${id}`, data);
+}
+
+// 删除
+export function deleteManager(id) {
+  return axios.post(`/admin/manager/${id}/delete`);
+}

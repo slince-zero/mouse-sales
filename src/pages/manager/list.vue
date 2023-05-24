@@ -53,7 +53,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="所属管理员" align="center">
+      <el-table-column label="所属角色" align="center">
         <template #default="{ row }">
           {{ row.role?.name || "-" }}
         </template>
@@ -119,16 +119,36 @@
         label-width="80px"
         :inline="false"
       >
-        <el-form-item label="公告标题" prop="title">
-          <el-input v-model="form.title" placeholder="公告标题"></el-input>
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="form.username" placeholder="用户名"></el-input>
         </el-form-item>
-        <el-form-item label="公告内容" prop="content">
-          <el-input
-            v-model="form.content"
-            placeholder="公告内容"
-            type="textarea"
-            :rows="5"
-          ></el-input>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="form.password" placeholder="密码"></el-input>
+        </el-form-item>
+
+        <el-form-item label="头像" prop="avator">
+          <el-input v-model="form.avator" placeholder="头像"></el-input>
+        </el-form-item>
+
+        <el-form-item label="所属角色" prop="role_id">
+          <el-select v-model="form.role_id" palceholder="选择所属角色">
+            <el-option
+              v-for="item in roles"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="状态" prop="status">
+          <el-switch
+            v-model="form.status"
+            :active-value="1"
+            :inactive-value="0"
+          >
+          </el-switch>
         </el-form-item>
       </el-form>
     </FormDrawer>
@@ -137,14 +157,14 @@
 
 <script setup>
 import { ref, reactive, computed } from "vue";
-import {
-  getNoticeList,
-  createNotice,
-  updateNotice,
-  deleteNotice,
-} from "~/api/notice.js";
 
-import { getManagerList, updateManagerStatus } from "~/api/manager";
+import {
+  getManagerList,
+  updateManagerStatus,
+  createManager,
+  updateManager,
+  deleteManager,
+} from "~/api/manager";
 import { toast } from "~/composables/util";
 import FormDrawer from "~/layouts/components/FormDrawer.vue";
 const searchForm = reactive({
@@ -165,6 +185,9 @@ const total = ref(0);
 // 分页--每页显示多少条数据
 const limit = ref(10);
 
+// 新增一条信息时候拿到列表下拉菜单的数据
+const roles = ref([]);
+
 // 获取数据
 function getData(p = null) {
   if (typeof p == "number") {
@@ -173,8 +196,10 @@ function getData(p = null) {
   loading.value = true;
   getManagerList(currentPage.value, searchForm)
     .then((res) => {
+      console.log(res);
       tableData.value = res.list;
       total.value = res.totalCount;
+      roles.value = res.roles;
     })
     .finally(() => {
       loading.value = false;
@@ -196,7 +221,7 @@ function restForm(row = false) {
 // 删除一条数据
 const handleDelete = (id) => {
   console.log(id);
-  deleteNotice(id).then((res) => {
+  deleteManager(id).then((res) => {
     toast("删除成功");
     getData();
   });
@@ -205,20 +230,23 @@ const handleDelete = (id) => {
 // 新增
 const formRef = ref();
 const form = reactive({
-  title: "",
-  content: "",
+  username: "",
+  password: "",
+  role_id: null,
+  status: 1,
+  avator: "",
 });
 const rules = {
-  title: [{ required: true, message: "公告名称不能为空", trigger: "blur" }],
-  content: [{ required: true, message: "内容不能为空", trigger: "blur" }],
+  username: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
+  password: [{ required: true, message: "密码不能为空", trigger: "blur" }],
 };
 const formDrawerRef = ref();
 const handleSubmit = () => {
   formRef.value.validate((valid) => {
     if (!valid) return;
     const fun = editId.value
-      ? updateNotice(editId.value, form)
-      : createNotice(form);
+      ? updateManager(editId.value, form)
+      : createManager(form);
     fun.then((res) => {
       toast(drawerTitle.value + "成功");
       // 修改刷新当前页，新增刷新第一页
@@ -231,8 +259,11 @@ const handleSubmit = () => {
 const handleCreate = () => {
   editId.value = 0;
   restForm({
-    title: "",
-    content: "",
+    username: "",
+    password: "",
+    role_id: null,
+    status: 1,
+    avator: "",
   });
   formDrawerRef.value.open();
 };
