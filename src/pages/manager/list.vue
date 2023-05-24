@@ -64,29 +64,36 @@
             :modelValue="row.status"
             :active-value="1"
             :inactive-value="0"
+            :disabled="row.super == 1"
+            @change="handleStatusChange($event, row)"
           >
           </el-switch>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="180" align="center">
         <template #default="scope">
-          <el-button
-            type="primary"
-            size="small"
-            text
-            @click="handleEdit(scope.row)"
-            >修改</el-button
+          <small v-if="scope.row.super == 1" class="text-sm text-gray-500"
+            >暂无操作</small
           >
-          <el-popconfirm
-            title="是否要删除该管理员?"
-            confirmButtonText="确认"
-            cancelButtonText="取消"
-            @confirm="handleDelete(scope.row.id)"
-          >
-            <template #reference>
-              <el-button type="primary" size="small" text>删除</el-button>
-            </template>
-          </el-popconfirm>
+          <div v-else>
+            <el-button
+              type="primary"
+              size="small"
+              text
+              @click="handleEdit(scope.row)"
+              >修改</el-button
+            >
+            <el-popconfirm
+              title="是否要删除该管理员?"
+              confirmButtonText="确认"
+              cancelButtonText="取消"
+              @confirm="handleDelete(scope.row.id)"
+            >
+              <template #reference>
+                <el-button type="primary" size="small" text>删除</el-button>
+              </template>
+            </el-popconfirm>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -137,7 +144,7 @@ import {
   deleteNotice,
 } from "~/api/notice.js";
 
-import { getManagerList } from "~/api/manager";
+import { getManagerList, updateManagerStatus } from "~/api/manager";
 import { toast } from "~/composables/util";
 import FormDrawer from "~/layouts/components/FormDrawer.vue";
 const searchForm = reactive({
@@ -235,5 +242,13 @@ const handleEdit = (row) => {
   editId.value = row.id;
   restForm(row);
   formDrawerRef.value.open();
+};
+
+// 修改状态
+const handleStatusChange = (status, row) => {
+  updateManagerStatus(row.id, status).then((res) => {
+    toast("修改状态成功");
+    row.status = status;
+  });
 };
 </script>
